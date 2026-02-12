@@ -1,6 +1,6 @@
 services:
   # 1. DATABASE (PostgreSQL)
-  - type: psql
+  - type: postgres
     name: voxverify-db
     region: singapore
     plan: free
