@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  # Database Service
+  db:
+    image: postgres:15
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=voxverify
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Backend API Service
+  backend:
+    build: ./backend
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://postgres:postgres@db:5432/voxverify
+      - JWT_SECRET=supersecretkeyChangeThisInProduction
+      - ALGORITHM=HS256
+      - TEMPLATE_FORCE_HTTPS=False
+      - DEBUG=False
+    restart: always
+
+volumes:
+  postgres_data:

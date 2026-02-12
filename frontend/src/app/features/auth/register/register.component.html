@@ -1,0 +1,52 @@
+<div class="auth-container">
+    <div class="card auth-card">
+        <h2 class="auth-title">Create Account</h2>
+        <p class="auth-subtitle">Join VoxVerify today</p>
+
+        <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" formControlName="username" placeholder="johndoe"
+                    [class.invalid]="registerForm.get('username')?.invalid && registerForm.get('username')?.touched">
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" formControlName="email" placeholder="name@company.com"
+                    [class.invalid]="registerForm.get('email')?.invalid && registerForm.get('email')?.touched">
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" formControlName="password" placeholder="••••••••"
+                    [class.invalid]="registerForm.get('password')?.invalid && registerForm.get('password')?.touched">
+                <div *ngIf="registerForm.get('password')?.hasError('minlength')" class="error-msg">
+                    Password must be at least 6 characters.
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="confirmPassword">Confirm Password</label>
+                <input type="password" id="confirmPassword" formControlName="confirmPassword" placeholder="••••••••"
+                    [class.invalid]="registerForm.hasError('mismatch') && registerForm.get('confirmPassword')?.touched">
+                <div *ngIf="registerForm.hasError('mismatch') && registerForm.get('confirmPassword')?.touched"
+                    class="error-msg">
+                    Passwords do not match.
+                </div>
+            </div>
+
+            <div *ngIf="error" class="alert-error">
+                {{ error }}
+            </div>
+
+            <button type="submit" class="btn btn-primary full-width" [disabled]="registerForm.invalid || loading">
+                <span *ngIf="loading" class="spinner-sm"></span>
+                <span *ngIf="!loading">Create Account</span>
+            </button>
+        </form>
+
+        <div class="auth-footer">
+            Already have an account? <a routerLink="/login">Sign in</a>
+        </div>
+    </div>
+</div>

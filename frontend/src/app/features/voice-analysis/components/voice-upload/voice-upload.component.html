@@ -1,0 +1,64 @@
+<div class="voice-upload-container">
+
+    <!-- Upload Form (Hidden when result is shown) -->
+    <div class="upload-wrapper" *ngIf="!result">
+
+        <!-- Language Selection -->
+        <div class="form-group">
+            <label for="language">Audio Language</label>
+            <div class="select-wrapper">
+                <select id="language" [(ngModel)]="selectedLanguage" [disabled]="loading">
+                    <option *ngFor="let lang of languages" [value]="lang">{{ lang }}</option>
+                </select>
+                <div class="select-arrow"></div>
+            </div>
+        </div>
+
+        <!-- Drop Zone -->
+        <div class="drop-zone" [class.drag-active]="isDragging" [class.has-file]="selectedFile"
+            (dragover)="onDragOver($event)" (dragleave)="onDragLeave($event)" (drop)="onDrop($event)"
+            (click)="fileInput.click()">
+            <div class="content">
+                <div class="icon" *ngIf="!selectedFile">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                        <polyline points="17 8 12 3 7 8" />
+                        <line x1="12" y1="3" x2="12" y2="15" />
+                    </svg>
+                </div>
+                <div class="text" *ngIf="!selectedFile">
+                    <h3>Upload Audio</h3>
+                    <p>Drag & drop or click to browse</p>
+                    <span class="hint">MP3 or WAV (Max 10MB)</span>
+                </div>
+
+                <div class="file-info" *ngIf="selectedFile">
+                    <div class="file-icon">🎵</div>
+                    <div class="file-details">
+                        <span class="name">{{ selectedFile.name }}</span>
+                        <span class="size">{{ (selectedFile.size / 1024 / 1024) | number:'1.1-2' }} MB</span>
+                    </div>
+                    <button class="btn-change" (click)="$event.stopPropagation(); fileInput.click()">Change</button>
+                </div>
+            </div>
+
+            <input #fileInput type="file" accept=".mp3,.wav" (change)="onFileSelected($event)" hidden>
+        </div>
+
+        <div class="error-msg" *ngIf="error">{{ error }}</div>
+
+        <!-- Analyze Button -->
+        <button class="btn-analyze" [disabled]="!selectedFile || loading" (click)="analyze()">
+            <span *ngIf="!loading">Analyze Voice</span>
+            <span *ngIf="loading" class="spinner-sm"></span>
+            <span *ngIf="loading">Processing...</span>
+        </button>
+    </div>
+
+    <!-- Result View -->
+    <div class="result-wrapper" *ngIf="result">
+        <app-results [result]="result"></app-results>
+        <button class="btn-reset" (click)="reset()">Analyze Another File</button>
+    </div>
+</div>
